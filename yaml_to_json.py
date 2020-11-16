@@ -9,17 +9,29 @@ class Node:
     def __init__(self, name):
         self.name = name
         self.child = []
+        self.parent = 0
 
         self.have_child_node = False
         self.content_something = False
+        self.have_parent = False
+        self.level = 0
+        self.last = False
+        # self.rec = False
 
     def add_child_node(self, node):
         self.have_child_node = True
         self.child.append(node)
+        for i in range(len(self.child)):
+            self.child[i].parent = self
+            self.child[i].last = False
+        self.child[len(self.child) - 1].last = True
 
     def set_content(self, content):
         self.content_something = True
         self.content = content
+
+    def set_level(self, level):
+        self.level = level
 
 
 def colon_detected(char_number, text) -> YamlLabel:
@@ -71,6 +83,37 @@ def colon_detected(char_number, text) -> YamlLabel:
         return YamlLabel(text[first_character_number : colon], number_of_spaces)
         
 
+def recurs(node: Node, text):
+    
+    if node.level != 6:
+        text = text + node.level*"  " + '"' + node.name + '": {\n'
+    else:
+        text = text + node.level*"  " + '"' + node.name + '":' + node.content
+        if node.last == False:
+            text = text + "," 
+        text = text + "\n"
+
+    for ch in node.child:
+        text = recurs(ch, text)
+
+    if node.level != 6:
+        text = text + node.level*"  " + "}"
+        if node.last == False:
+            text = text + ","
+
+        text = text + "\n"
+
+
+
+    return text
+
+
+
+def tree_to_json(tree):
+    json_text = ""
+    return recurs(tree, json_text)
+
+
 def get_yaml_labels(yaml):
     
     yaml_labels = []
@@ -90,27 +133,40 @@ def get_yaml_labels(yaml):
     return yaml_labels
 
 
-# def make_node_tree(label_list):
-#     root = Node("root")
+def make_node_tree(labels):
+    root = Node("root")
 
-#     upper_level = root
-#     upper_upper_level = root
+    zero_level = root
+    level_2 = root
+    level_4 = root
 
-#     for label in  label_list:
-#         pass
+    for i in range(len(labels)):
 
+        if labels[i].number_of_spaces == 0:
+            node = Node(labels[i].name)
+            node.set_level(0)
+            root.add_child_node(node)
+            zero_level = node
 
-#     return root
+        if labels[i].number_of_spaces == 2:
+            node = Node(labels[i].name)
+            node.set_level(2)
+            zero_level.add_child_node(node)
+            level_2 = node
 
+        if labels[i].number_of_spaces == 4:
+            node = Node(labels[i].name)
+            node.set_level(4)
+            level_2.add_child_node(node)
+            level_4 = node
 
-def make_json_text(label_list: YamlLabel):
-    
-    json_text = "azaza \n"
+        if labels[i].number_of_spaces == 6:
+            node = Node(labels[i].name)
+            node.set_level(6)
+            node.set_content(labels[i].content)
+            level_4.add_child_node(node)
 
-    for i in range(len(label_list)):
-        pass
-
-    return json_text
+    return root
 
 
 def main():
@@ -124,8 +180,9 @@ def main():
 
     yaml_labels = get_yaml_labels(yaml_text)
     print("label list is done")
-    json_text = make_json_text(yaml_labels)
-    print("json text is ready")
+    root = make_node_tree(yaml_labels)
+    print("tree is ready")
+    json_text = tree_to_json(root.child[0])
 
 
     with open("./json.json", "w") as file:

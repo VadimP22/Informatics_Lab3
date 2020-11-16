@@ -1,1 +1,38 @@
-azaza 
+{
+    "week": {
+        "both": {
+            "mathLecture": {
+                "hours": 9,
+                "minutes": 50
+            },
+            "mathPractice": {
+                "hours": 15,
+                "minutes": 20
+            }
+        },
+        "even": {
+            "programming": {
+                "hours": 10,
+                "minutes": 0
+            },
+            "fpa": {
+                "hours": 11,
+                "minutes": 40
+            }
+        },
+        "noteven": {
+            "informatics": {
+                "hours": 10,
+                "minutes": 0
+            },
+            "discreteMath": {
+                "hours": 11,
+                "minutes": 40
+            },
+            "discreteMathAdditional": {
+                "hours": 13,
+                "minutes": 30
+            }
+        }
+    }
+}
