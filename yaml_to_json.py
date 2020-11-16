@@ -169,11 +169,11 @@ def make_node_tree(labels):
     return root
 
 
-def main():
+def parse_and_convert(path_to_yaml, path_to_json):
 
     yaml_text = ""
 
-    with open("./yaml.yaml", "r") as file:
+    with open(path_to_yaml, "r") as file:
         yaml_text = file.read()
 
     yaml_text = yaml_text + "\n"
@@ -187,9 +187,12 @@ def main():
 
 
 
-    with open("./json.json", "w") as file:
+    with open(path_to_json, "w") as file:
          file.write(json_text)
 
+
+def main():
+    parse_and_convert("./yaml.yaml", "./json.json")
 
 
 
