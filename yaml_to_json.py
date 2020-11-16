@@ -85,7 +85,7 @@ def colon_detected(char_number, text) -> YamlLabel:
 
 def recurs(node: Node, text):
     
-    if node.level != 6:
+    if node.level != 8:
         text = text + node.level*"  " + '"' + node.name + '": {\n'
     else:
         text = text + node.level*"  " + '"' + node.name + '":' + node.content
@@ -96,7 +96,7 @@ def recurs(node: Node, text):
     for ch in node.child:
         text = recurs(ch, text)
 
-    if node.level != 6:
+    if node.level != 8:
         text = text + node.level*"  " + "}"
         if node.last == False:
             text = text + ","
@@ -144,25 +144,25 @@ def make_node_tree(labels):
 
         if labels[i].number_of_spaces == 0:
             node = Node(labels[i].name)
-            node.set_level(0)
+            node.set_level(2)
             root.add_child_node(node)
             zero_level = node
 
         if labels[i].number_of_spaces == 2:
             node = Node(labels[i].name)
-            node.set_level(2)
+            node.set_level(4)
             zero_level.add_child_node(node)
             level_2 = node
 
         if labels[i].number_of_spaces == 4:
             node = Node(labels[i].name)
-            node.set_level(4)
+            node.set_level(6)
             level_2.add_child_node(node)
             level_4 = node
 
         if labels[i].number_of_spaces == 6:
             node = Node(labels[i].name)
-            node.set_level(6)
+            node.set_level(8)
             node.set_content(labels[i].content)
             level_4.add_child_node(node)
 
@@ -179,10 +179,12 @@ def main():
     yaml_text = yaml_text + "\n"
 
     yaml_labels = get_yaml_labels(yaml_text)
-    print("label list is done")
+    # print("label list is done")
     root = make_node_tree(yaml_labels)
-    print("tree is ready")
-    json_text = tree_to_json(root.child[0])
+    # print("tree is ready")
+    json_text = "{\n" + tree_to_json(root.child[0]) + "}"
+
+
 
 
     with open("./json.json", "w") as file:
