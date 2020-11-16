@@ -1,3 +1,10 @@
+class YamlLabel():
+    def __init__(self, name, number_of_spaces, content = False):
+        self.name = name
+        self.number_of_spaces = number_of_spaces
+        self.content = content
+
+
 class Node:
     def __init__(self, name):
         self.name = name
@@ -15,8 +22,8 @@ class Node:
         self.content = content
 
 
-def colon_detected(char_number, text):
-    print(text[char_number])
+def colon_detected(char_number, text) -> YamlLabel:
+    # print(text[char_number])
 
 
     counter = char_number
@@ -26,6 +33,8 @@ def colon_detected(char_number, text):
     is_first_space = True
     first_character_number = 0
 
+
+    #обработка символов до двоеточия
     while counter >= 0:
         counter = counter - 1
 
@@ -41,27 +50,67 @@ def colon_detected(char_number, text):
                 first_character_number = counter + 1
 
 
-    print(number_of_spaces)
-    print(text[first_character_number : colon])
-    # {number of spaces, string name, }
-        
-        
+    #обработка символов после двоеточия
+    counter = char_number
     
 
-
-def convert_yaml_to_json(yaml):
     
-    root = Node("root")
+    while text[counter] != "\n":
+        counter = counter + 1
+        
+
+    content = text[colon + 1 : counter]
+        
+
+
+    # print(number_of_spaces)
+    # print(text[first_character_number : colon])
+    if content != "":
+        return YamlLabel(text[first_character_number : colon], number_of_spaces, content)
+    else:
+        return YamlLabel(text[first_character_number : colon], number_of_spaces)
+        
+
+def get_yaml_labels(yaml):
+    
+    yaml_labels = []
+
 
     char_number = 0
     for c in yaml:
         
         if c == ":":
-            colon_detected(char_number, yaml)
+            yaml_labels.append(colon_detected(char_number, yaml))
 
 
         char_number = char_number + 1
 
+    # print("labels list is done")
+    
+    return yaml_labels
+
+
+# def make_node_tree(label_list):
+#     root = Node("root")
+
+#     upper_level = root
+#     upper_upper_level = root
+
+#     for label in  label_list:
+#         pass
+
+
+#     return root
+
+
+def make_json_text(label_list: YamlLabel):
+    
+    json_text = "azaza \n"
+
+    for i in range(len(label_list)):
+        pass
+
+    return json_text
 
 
 def main():
@@ -71,13 +120,17 @@ def main():
     with open("./yaml.yaml", "r") as file:
         yaml_text = file.read()
 
+    yaml_text = yaml_text + "\n"
 
-    json_text = convert_yaml_to_json(yaml_text)
+    yaml_labels = get_yaml_labels(yaml_text)
+    print("label list is done")
+    json_text = make_json_text(yaml_labels)
+    print("json text is ready")
 
-    # with open("./json.json", "w"):
-    #     file.write(json_text)
 
-    print(yaml_text)
+    with open("./json.json", "w") as file:
+         file.write(json_text)
+
 
 
 
