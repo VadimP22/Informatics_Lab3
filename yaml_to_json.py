@@ -83,7 +83,7 @@ def colon_detected(char_number, text) -> YamlLabel:
         return YamlLabel(text[first_character_number : colon], number_of_spaces)
         
 
-def recurs(node: Node, text):
+def recursive_text_constructor(node: Node, text):
     
     if node.level != 8:
         text = text + node.level*"  " + '"' + node.name + '": {\n'
@@ -94,7 +94,7 @@ def recurs(node: Node, text):
         text = text + "\n"
 
     for ch in node.child:
-        text = recurs(ch, text)
+        text = recursive_text_constructor(ch, text)
 
     if node.level != 8:
         text = text + node.level*"  " + "}"
@@ -111,7 +111,7 @@ def recurs(node: Node, text):
 
 def tree_to_json(tree):
     json_text = ""
-    return recurs(tree, json_text)
+    return recursive_text_constructor(tree, json_text)
 
 
 def get_yaml_labels(yaml):
