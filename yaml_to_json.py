@@ -1,3 +1,7 @@
+import time
+import yaml
+import json
+
 class YamlLabel():
     def __init__(self, name, number_of_spaces, content = False):
         self.name = name
@@ -191,13 +195,27 @@ def parse_and_convert(path_to_yaml, path_to_json):
          file.write(json_text)
 
 
+def external_library_parser(path_to_yaml, path_to_json):
+    with open(path_to_yaml, 'r') as yaml_in, open(path_to_json, "w") as json_out:
+        yaml_object = yaml.safe_load(yaml_in) # yaml_object will be a list or a dict
+        json.dump(yaml_object, json_out)
+
+
 def main():
-    parse_and_convert("./yaml.yaml", "./json.json")
+    start_time = time.time()
+    for i in range(10):
+        parse_and_convert("./yaml.yaml", "./json.json")
+    delta_time1 = time.time() - start_time
+    print("My script: (s) " + str(delta_time1))
 
-
-
+    start_time = time.time()
+    for i in range(10):
+        external_library_parser("./yaml.yaml", "./json.json")
+    delta_time2 = time.time() - start_time
+    print("External library: (s) " + str(delta_time2))
+    print("my time - lib time:" + str(delta_time1 - delta_time2)) 
 
 
 if __name__ == "__main__":
     main()
-    print("READY")
+    print("===READY===")
